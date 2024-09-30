@@ -1,7 +1,9 @@
 package handler
 
-import "github.com/gorilla/websocket"
+import (
+	"github.com/oceanSimple/websocket-framework"
+)
 
 type Handler interface {
-	Handle([]byte, *websocket.Conn) error
+	Handle([]byte, *wsFramework.Client) error
 }

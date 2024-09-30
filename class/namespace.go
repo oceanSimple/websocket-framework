@@ -1,4 +1,4 @@
-package model
+package class
 
 type NameSpace struct {
 	Name     string                `json:"name"`

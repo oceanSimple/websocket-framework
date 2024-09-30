@@ -3,7 +3,8 @@ package wsFramework
 import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/oceanSimple/websocket-framework/model"
+	"github.com/oceanSimple/websocket-framework/class"
+	"github.com/oceanSimple/websocket-framework/global"
 	"github.com/oceanSimple/websocket-framework/output"
 	"log"
 	"net/http"
@@ -24,17 +25,26 @@ func (server *Server) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 		log.Println(output.OutputError() + err.Error())
 		return
 	}
+
+	// generate an uuid
+	uid := uuid.New()
+	uidMsg, _ := class.MarshalMessage(class.NewMessage("system", "/uuid", uid.String()))
+	_ = conn.WriteMessage(websocket.TextMessage, uidMsg)
+
 	defer func(conn *websocket.Conn) {
+		// remove client from global clients
+		global.RemoveClient(uid.String())
 		err := conn.Close()
 		if err != nil {
 			log.Println(output.OutputError() + err.Error())
 		}
 	}(conn)
 
-	// generate an uuid
-	uid := uuid.New()
-	uidMsg, _ := model.MarshalMessage(model.NewMessage("system", "uuid", uid.String()))
-	_ = conn.WriteMessage(websocket.TextMessage, uidMsg)
+	// create a new client
+	client := NewClient(uid.String(), conn)
+
+	// add client to global clients
+	global.AddClient(client)
 
 	// handle messages
 	for {
@@ -45,7 +55,7 @@ func (server *Server) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// handle message
-		err = server.handler.Handle(msg, conn)
+		err = server.handler.Handle(msg, client)
 		if err != nil {
 			log.Println(output.OutputError() + err.Error())
 		}

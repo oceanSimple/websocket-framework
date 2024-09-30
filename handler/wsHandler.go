@@ -2,16 +2,16 @@ package handler
 
 import (
 	"errors"
-	"github.com/gorilla/websocket"
+	"github.com/oceanSimple/websocket-framework"
+	"github.com/oceanSimple/websocket-framework/class"
 	"github.com/oceanSimple/websocket-framework/global"
-	"github.com/oceanSimple/websocket-framework/model"
 )
 
 type WsHandler struct{}
 
-func (w WsHandler) Handle(bytes []byte, conn *websocket.Conn) error {
+func (w WsHandler) Handle(bytes []byte, client *wsFramework.Client) error {
 	// parse []byte to Message
-	message, err := model.ParseMessage(bytes)
+	message, err := class.ParseMessage(bytes)
 	if err != nil {
 		return err
 	}
@@ -29,5 +29,5 @@ func (w WsHandler) Handle(bytes []byte, conn *websocket.Conn) error {
 	}
 
 	// execute the method
-	return method(conn, message.Data)
+	return method(client, message.Data)
 }
