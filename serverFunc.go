@@ -1,15 +1,16 @@
 package wsFramework
 
-import (
-	"github.com/oceanSimple/websocket-framework/class"
-	"github.com/oceanSimple/websocket-framework/global"
-)
+import "fmt"
 
-func (server *Server) On(ns string, path string, handler class.SendMethod) {
+func (server *Server) On(ns string, path string, handler SendMethod) {
 	// get the namespace
-	namespace, err := global.GetNameSpace(ns)
+	namespace, err := nameSpaces.GetNameSpace(ns)
 	if err != nil {
-		namespace = global.NewNameSpace(ns)
+		namespace, err = nameSpaces.newNameSpace(ns)
+		if err != nil {
+			fmt.Println(outputError() + err.Error())
+			return
+		}
 	}
 
 	// add the handler
@@ -23,7 +24,7 @@ func (server *Server) Handle(bytes []byte, client *Client) error {
 	}
 
 	// get the namespace
-	ns, err := server.nameSpaces.GetNameSpace(message.NameSpaceName)
+	ns, err := nameSpaces.GetNameSpace(message.NameSpaceName)
 	if err != nil {
 		return err
 	}

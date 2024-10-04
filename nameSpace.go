@@ -25,9 +25,9 @@ func (m NameSpaceMap) GetNameSpace(name string) (*NameSpace, error) {
 	return m[name], nil
 }
 
-func (m NameSpaceMap) newNameSpace(name string) error {
+func (m NameSpaceMap) newNameSpace(name string) (*NameSpace, error) {
 	if _, ok := m[name]; ok {
-		return fmt.Errorf("NameSpace %s already exists", name)
+		return nil, fmt.Errorf("NameSpace %s already exists", name)
 	}
 
 	m[name] = &NameSpace{
@@ -35,5 +35,5 @@ func (m NameSpaceMap) newNameSpace(name string) error {
 		Handlers: make(map[string]SendMethod),
 	}
 
-	return nil
+	return m[name], nil
 }

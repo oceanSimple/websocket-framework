@@ -32,7 +32,10 @@ func (r RoomMap) newRoom(name string) error {
 
 func (r RoomMap) addClientToRoom(roomName, clientID string, client *Client) error {
 	if _, ok := r[roomName]; !ok {
-		return fmt.Errorf("Room %s not exists", roomName)
+		err := r.newRoom(roomName)
+		if err != nil {
+			return err
+		}
 	}
 
 	r[roomName].Clients[clientID] = client

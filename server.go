@@ -2,7 +2,6 @@ package wsFramework
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/oceanSimple/websocket-framework/handler"
 	"net/http"
 )
 
@@ -11,27 +10,15 @@ type ServerOption func(*Server)
 type Server struct {
 	Port string
 
-	// used to store all the namespace
-	nameSpaces NameSpaceMap
-
-	// used to store all the rooms
-	rooms RoomMap
-
 	// upgrader is used to upgrade an HTTP connection to a WebSocket connection.
 	upgrader *websocket.Upgrader
-
-	handler handler.Handler
 }
 
 func NewServer(options ...ServerOption) *Server {
 	server := &Server{
 		Port: "9000",
 
-		nameSpaces: make(map[string]*NameSpace),
-		rooms:      make(map[string]*Room),
-
 		upgrader: defaultUpgrader(),
-		handler:  handler.WsHandler{},
 	}
 	for _, option := range options {
 		option(server)
