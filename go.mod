@@ -1,4 +1,4 @@
-module github.com/oceanSimple/websocket-framework
+module github.com/oceanSimple/websocket-framework/v1.0
 
 go 1.20
 
