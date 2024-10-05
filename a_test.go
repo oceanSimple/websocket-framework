@@ -11,5 +11,11 @@ func TestRun(t *testing.T) {
 		fmt.Println("receive data: ", data)
 		return client.Emit("test", "/test", "test data")
 	})
+	server.On("test", "/joinRoom", func(client *Client, data any) error {
+		return client.Join("testRoom")
+	})
+	server.On("test", "/broadcast", func(client *Client, data any) error {
+		return client.BroadcastToOthers("testRoom", "test", "/broadcast", "broadcast data")
+	})
 	server.Run("9000")
 }
